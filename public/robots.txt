@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Private site for Amy's daily sudoku
+# No search engine indexing allowed
