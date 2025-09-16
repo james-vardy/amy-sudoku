@@ -19,7 +19,7 @@ export default function SudokuGrid({
 }: SudokuGridProps) {
   const getCellClassName = (row: number, col: number): string => {
     const baseClasses =
-      "w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-sm sm:text-base md:text-lg font-bold transition-all duration-200 cursor-pointer select-none relative";
+      "w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center text-xs sm:text-sm md:text-base font-bold transition-all duration-200 cursor-pointer select-none relative";
 
     let classes = baseClasses;
 
@@ -102,14 +102,14 @@ export default function SudokuGrid({
       </div>
 
       {/* Main grid container with Valentine's styling */}
-      <div className="inline-block bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-4 rounded-2xl shadow-2xl border-4 border-rose-300">
+      <div className="inline-block bg-gradient-to-br from-pink-100 via-rose-50 to-pink-100 p-2 sm:p-3 md:p-4 rounded-2xl shadow-2xl border-4 border-rose-300">
         {/* 3x3 section containers */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-1 sm:gap-2">
           {[0, 1, 2].map((boxRow) =>
             [0, 1, 2].map((boxCol) => (
               <div
                 key={`${boxRow}-${boxCol}`}
-                className="bg-white rounded-lg p-1 shadow-md border-2 border-rose-200"
+                className="bg-white rounded-lg p-0.5 sm:p-1 shadow-md border-2 border-rose-200"
               >
                 <div className="grid grid-cols-3 gap-0">
                   {[0, 1, 2].map((cellRow) =>

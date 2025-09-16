@@ -246,7 +246,7 @@ export default function SudokuGame({
   }, [gameState, handleNumberClick, handleClear]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen valentine-bg bg-gradient-to-br from-pink-50 via-rose-25 to-pink-100 p-4 relative overflow-hidden">
+    <div className="flex flex-col items-center min-h-screen valentine-bg bg-gradient-to-br from-pink-50 via-rose-25 to-pink-100 p-2 sm:p-4 relative overflow-hidden">
       {/* Background hearts pattern */}
       {isClient && (
         <div className="absolute inset-0 opacity-5 pointer-events-none">
@@ -280,7 +280,7 @@ export default function SudokuGame({
         onPlayStart={handlePlayStart}
       />
 
-      <div className="flex flex-col xl:flex-row items-center xl:items-start space-y-8 xl:space-y-0 xl:space-x-12 relative z-10">
+      <div className="flex flex-col xl:flex-row items-center xl:items-start space-y-4 sm:space-y-6 xl:space-y-0 xl:space-x-8 relative z-10">
         <SudokuGrid
           grid={gameState.currentGrid}
           originalPuzzle={puzzle.puzzle}
