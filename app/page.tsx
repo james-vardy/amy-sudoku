@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { SudokuPuzzle } from "./types/sudoku";
+import { SudokuPuzzle, GameStats } from "./types/sudoku";
 import { SudokuUtils } from "./utils/sudoku";
 import SudokuGame from "./components/SudokuGame";
 import StatsModal from "./components/StatsModal";
@@ -12,6 +12,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showStats, setShowStats] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     async function loadTodaysPuzzle() {
@@ -40,7 +45,8 @@ export default function Home() {
     loadTodaysPuzzle();
   }, []);
 
-  const handleGameComplete = (stats: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleGameComplete = (_stats: GameStats) => {
     setShowStats(true);
   };
 
@@ -50,27 +56,29 @@ export default function Home() {
         <AppHeader onStatsClick={() => setShowStats(true)} />
         <div className="min-h-screen valentine-bg bg-gradient-to-br from-pink-50 via-rose-25 to-pink-100 flex items-center justify-center relative">
           {/* Background hearts for loading */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            {[...Array(15)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute text-pink-400 animate-pulse"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  fontSize: `${1.5 + Math.random() * 2}rem`,
-                  animationDelay: `${Math.random() * 2}s`,
-                }}
-              >
-                ♥
-              </div>
-            ))}
-          </div>
+          {isClient && (
+            <div className="absolute inset-0 opacity-10 pointer-events-none">
+              {[...Array(15)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute text-pink-400 animate-pulse"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    fontSize: `${1.5 + Math.random() * 2}rem`,
+                    animationDelay: `${Math.random() * 2}s`,
+                  }}
+                >
+                  ♥
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-8 border-3 border-pink-300 shadow-2xl relative z-10">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-pink-300 border-t-pink-600 mx-auto mb-6"></div>
             <p className="text-pink-700 font-semibold text-lg">
-              Loading today's puzzle with love... ♥
+              Loading today&apos;s puzzle with love... ♥
             </p>
           </div>
         </div>

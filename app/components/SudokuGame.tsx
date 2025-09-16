@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { SudokuPuzzle, GameState } from "../types/sudoku";
+import { SudokuPuzzle, GameState, GameStats } from "../types/sudoku";
 import { SudokuUtils, LocalStorage } from "../utils/sudoku";
 import SudokuGrid from "./SudokuGrid";
 import NumberInput from "./NumberInput";
@@ -9,13 +9,19 @@ import GameHeader from "./GameHeader";
 
 interface SudokuGameProps {
   puzzle: SudokuPuzzle;
-  onGameComplete?: (stats: any) => void;
+  onGameComplete?: (stats: GameStats) => void;
 }
 
 export default function SudokuGame({
   puzzle,
   onGameComplete,
 }: SudokuGameProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const [gameState, setGameState] = useState<GameState>(() => {
     // Try to load saved game state
     const saved = LocalStorage.loadGameState(puzzle.date);
@@ -43,6 +49,10 @@ export default function SudokuGame({
 
   // Timer effect
   useEffect(() => {
+    if (timer) {
+      clearInterval(timer);
+    }
+
     if (gameState.hasStarted && !gameState.isCompleted) {
       const interval = setInterval(() => {
         const now = Date.now();
@@ -51,9 +61,10 @@ export default function SudokuGame({
       }, 1000);
       setTimer(interval);
 
-      return () => clearInterval(interval);
-    } else if (timer) {
-      clearInterval(timer);
+      return () => {
+        clearInterval(interval);
+        setTimer(null);
+      };
     }
   }, [gameState.hasStarted, gameState.isCompleted, gameState.startTime]);
 
@@ -177,6 +188,7 @@ export default function SudokuGame({
       currentGrid: newGrid,
     }));
   }, [
+    gameState.hasStarted,
     gameState.selectedCell,
     gameState.currentGrid,
     gameState.isCompleted,
@@ -236,25 +248,27 @@ export default function SudokuGame({
   return (
     <div className="flex flex-col items-center min-h-screen valentine-bg bg-gradient-to-br from-pink-50 via-rose-25 to-pink-100 p-4 relative overflow-hidden">
       {/* Background hearts pattern */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute text-pink-400"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              fontSize: `${2 + Math.random() * 3}rem`,
-              transform: `rotate(${Math.random() * 360}deg)`,
-              animation: `pulse-heart ${
-                2 + Math.random() * 3
-              }s infinite ease-in-out`,
-            }}
-          >
-            ♥
-          </div>
-        ))}
-      </div>
+      {isClient && (
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute text-pink-400"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                fontSize: `${2 + Math.random() * 3}rem`,
+                transform: `rotate(${Math.random() * 360}deg)`,
+                animation: `pulse-heart ${
+                  2 + Math.random() * 3
+                }s infinite ease-in-out`,
+              }}
+            >
+              ♥
+            </div>
+          ))}
+        </div>
+      )}
 
       <GameHeader
         puzzleNumber={puzzle.id}

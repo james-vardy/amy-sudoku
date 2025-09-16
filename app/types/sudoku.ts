@@ -18,10 +18,11 @@ export interface GameState {
 
 export interface GameStats {
   gamesPlayed: number;
-  gamesWon: number;
+  gamesCompleted: number;
+  totalTime: number;
+  averageTime: number;
+  fastestTime: number;
+  slowestTime: number;
   currentStreak: number;
   maxStreak: number;
-  averageTime: number;
-  totalTime: number;
-  fastestTime: number;
 }

@@ -34,7 +34,7 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
 
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent flex items-center gap-2">
-            ♥ Your Love Stats ♥
+            ♥ Your Sudoku Journey ♥
           </h2>
           <button
             onClick={onClose}
@@ -50,37 +50,36 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
               {stats.gamesPlayed}
             </div>
             <div className="text-sm font-semibold text-pink-600 flex items-center justify-center gap-1">
-              ♥ Games Played ♥
+              Games Played
             </div>
           </div>
 
           <div className="text-center p-5 bg-gradient-to-br from-green-100 to-emerald-100 border-2 border-green-200 rounded-xl shadow-md">
             <div className="text-3xl font-bold text-green-700 mb-1">
-              {stats.gamesWon}
+              {stats.gamesCompleted}
             </div>
             <div className="text-sm font-semibold text-green-600 flex items-center justify-center gap-1">
-              💚 Games Won 💚
+              Completed
+            </div>
+          </div>
+
+          <div className="text-center p-5 bg-gradient-to-br from-blue-100 to-cyan-100 border-2 border-blue-200 rounded-xl shadow-md">
+            <div className="text-3xl font-bold text-blue-700 mb-1">
+              {stats.averageTime > 0
+                ? SudokuUtils.formatTime(Math.round(stats.averageTime))
+                : "--:--"}
+            </div>
+            <div className="text-sm font-semibold text-blue-600 flex items-center justify-center gap-1">
+              Average Time
             </div>
           </div>
 
           <div className="text-center p-5 bg-gradient-to-br from-purple-100 to-violet-100 border-2 border-purple-200 rounded-xl shadow-md">
             <div className="text-3xl font-bold text-purple-700 mb-1">
-              {Math.round(
-                (stats.gamesWon / Math.max(stats.gamesPlayed, 1)) * 100
-              )}
-              %
-            </div>
-            <div className="text-sm font-semibold text-purple-600 flex items-center justify-center gap-1">
-              💜 Win Rate 💜
-            </div>
-          </div>
-
-          <div className="text-center p-5 bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-200 rounded-xl shadow-md">
-            <div className="text-3xl font-bold text-orange-700 mb-1">
               {stats.currentStreak}
             </div>
-            <div className="text-sm font-semibold text-orange-600 flex items-center justify-center gap-1">
-              🧡 Current Streak 🧡
+            <div className="text-sm font-semibold text-purple-600 flex items-center justify-center gap-1">
+              Current Streak
             </div>
           </div>
         </div>
@@ -88,31 +87,56 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
         <div className="bg-white/70 rounded-xl p-6 space-y-4 mb-8 border-2 border-pink-200">
           <div className="flex justify-between items-center">
             <span className="text-rose-700 font-semibold flex items-center gap-2">
-              ♥ Max Streak:
+              Max Streak:
             </span>
             <span className="font-bold text-pink-600 text-lg">
-              {stats.maxStreak}
+              {stats.maxStreak} games
             </span>
           </div>
-
-          {stats.averageTime > 0 && (
-            <div className="flex justify-between items-center">
-              <span className="text-rose-700 font-semibold flex items-center gap-2">
-                ⏱️ Average Time:
-              </span>
-              <span className="font-bold text-pink-600 text-lg">
-                {SudokuUtils.formatTime(Math.round(stats.averageTime))}
-              </span>
-            </div>
-          )}
 
           {stats.fastestTime > 0 && (
             <div className="flex justify-between items-center">
               <span className="text-rose-700 font-semibold flex items-center gap-2">
                 🏃‍♀️ Fastest Time:
               </span>
-              <span className="font-bold text-pink-600 text-lg">
+              <span className="font-bold text-green-600 text-lg">
                 {SudokuUtils.formatTime(stats.fastestTime)}
+              </span>
+            </div>
+          )}
+
+          {stats.slowestTime > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-rose-700 font-semibold flex items-center gap-2">
+                Slowest Time:
+              </span>
+              <span className="font-bold text-blue-600 text-lg">
+                {SudokuUtils.formatTime(stats.slowestTime)}
+              </span>
+            </div>
+          )}
+
+          {stats.totalTime > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-rose-700 font-semibold flex items-center gap-2">
+                Total Time:
+              </span>
+              <span className="font-bold text-purple-600 text-lg">
+                {SudokuUtils.formatTime(stats.totalTime)}
+              </span>
+            </div>
+          )}
+
+          {stats.gamesCompleted > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-rose-700 font-semibold flex items-center gap-2">
+                Completion Rate:
+              </span>
+              <span className="font-bold text-orange-600 text-lg">
+                {Math.round(
+                  (stats.gamesCompleted / Math.max(stats.gamesPlayed, 1)) * 100
+                )}
+                %
               </span>
             </div>
           )}
@@ -122,7 +146,7 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
           onClick={onClose}
           className="heart-button w-full px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
         >
-          ♥ Close with Love ♥
+          ♥ Keep Playing, My Love! ♥
         </button>
       </div>
     </div>

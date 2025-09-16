@@ -1,4 +1,4 @@
-import { SudokuPuzzle, GameStats } from "../types/sudoku";
+import { SudokuPuzzle, GameStats, GameState } from "../types/sudoku";
 
 export class SudokuUtils {
   // Get today's puzzle
@@ -106,7 +106,10 @@ export class LocalStorage {
   private static readonly CURRENT_DATE_KEY = "amy-sudoku-current-date";
 
   // Save game state
-  static saveGameState(date: string, gameState: any): void {
+  static saveGameState(
+    date: string,
+    gameState: GameState & { puzzleId: number }
+  ): void {
     if (typeof window !== "undefined") {
       localStorage.setItem(
         `${this.GAME_STATE_KEY}-${date}`,
@@ -116,7 +119,9 @@ export class LocalStorage {
   }
 
   // Load game state
-  static loadGameState(date: string): any | null {
+  static loadGameState(
+    date: string
+  ): (GameState & { puzzleId: number }) | null {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(`${this.GAME_STATE_KEY}-${date}`);
       return saved ? JSON.parse(saved) : null;
@@ -136,36 +141,60 @@ export class LocalStorage {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(this.STATS_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsedStats = JSON.parse(saved);
+
+        // Migration for legacy stats structure
+        if (
+          parsedStats.gamesWon !== undefined &&
+          parsedStats.gamesCompleted === undefined
+        ) {
+          return {
+            gamesPlayed: parsedStats.gamesPlayed || 0,
+            gamesCompleted: parsedStats.gamesWon || 0,
+            totalTime: parsedStats.totalTime || 0,
+            averageTime: parsedStats.averageTime || 0,
+            fastestTime: parsedStats.fastestTime || 0,
+            slowestTime: 0, // New field, start fresh
+            currentStreak: parsedStats.currentStreak || 0,
+            maxStreak: parsedStats.maxStreak || 0,
+          };
+        }
+
+        return parsedStats;
       }
     }
 
     return {
       gamesPlayed: 0,
-      gamesWon: 0,
+      gamesCompleted: 0,
+      totalTime: 0,
+      averageTime: 0,
+      fastestTime: 0,
+      slowestTime: 0,
       currentStreak: 0,
       maxStreak: 0,
-      averageTime: 0,
-      totalTime: 0,
-      fastestTime: 0,
     };
   }
 
   // Update stats after game completion
-  static updateStats(won: boolean, timeInSeconds: number): GameStats {
+  static updateStats(completed: boolean, timeInSeconds: number): GameStats {
     const stats = this.loadStats();
 
     stats.gamesPlayed++;
 
-    if (won) {
-      stats.gamesWon++;
+    if (completed) {
+      stats.gamesCompleted++;
       stats.currentStreak++;
       stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
       stats.totalTime += timeInSeconds;
-      stats.averageTime = stats.totalTime / stats.gamesWon;
+      stats.averageTime = stats.totalTime / stats.gamesCompleted;
 
       if (stats.fastestTime === 0 || timeInSeconds < stats.fastestTime) {
         stats.fastestTime = timeInSeconds;
+      }
+
+      if (stats.slowestTime === 0 || timeInSeconds > stats.slowestTime) {
+        stats.slowestTime = timeInSeconds;
       }
     } else {
       stats.currentStreak = 0;
