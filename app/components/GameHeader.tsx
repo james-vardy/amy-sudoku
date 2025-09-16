@@ -52,9 +52,6 @@ export default function GameHeader({
             >
               ♥ Start Playing ♥
             </button>
-            <p className="text-pink-600 mt-2 text-sm">
-              Click to begin your timer and start solving! 🎯
-            </p>
           </div>
         )}
 
